@@ -62,3 +62,5 @@ config :todomvc, Todomvc.Repo,
   database: "todomvc_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :todomvc, :websocket_url, "ws://localhost:4000/socket/websocket?vsn=1.0.0"

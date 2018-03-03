@@ -32,7 +32,7 @@ import { Socket as PhoenixSocket } from "phoenix";
 
 document.addEventListener("DOMContentLoaded", function() {
   const link = createAbsintheSocketLink(
-    AbsintheSocket.create(new PhoenixSocket("ws://localhost:4000/socket/websocket?vsn=1.0.0"))
+    AbsintheSocket.create(new PhoenixSocket(window.websocketUrl))
   );
 
   const client = new ApolloClient({
