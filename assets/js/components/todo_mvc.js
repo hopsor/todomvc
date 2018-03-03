@@ -33,6 +33,18 @@ class TodoMVC extends Component {
     }
   }
 
+  renderItemsLeft() {
+    const { todos } = this.props.data;
+    const reducer = (accumulator, todo) => accumulator + (todo.completed === false);
+    const leftCount = todos.reduce(reducer, 0);
+
+    return (
+      <span className="todo-count">
+        <strong>{leftCount}</strong> item left
+      </span>
+    );
+  }
+
   renderTodos() {
     const { loading, todos } = this.props.data;
 
@@ -48,10 +60,7 @@ class TodoMVC extends Component {
           </section>
           {/* This footer should hidden by default and shown when there are todos */}
           <footer className="footer">
-            {/* This should be `0 items left` by default */}
-            <span className="todo-count">
-              <strong>0</strong> item left
-            </span>
+            {this.renderItemsLeft()}
             <button className="clear-completed">Clear completed</button>
           </footer>
         </React.Fragment>
