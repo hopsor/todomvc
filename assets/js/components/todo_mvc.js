@@ -1,8 +1,27 @@
 import React, { Component } from "react";
+import { graphql, compose } from "react-apollo";
+import gql from "graphql-tag";
 
-export default class TodoMVC extends Component {
+class TodoMVC extends Component {
   constructor(props){
     super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+
+  handleKeyPress(e){
+    if (e.key === "Enter"){
+      this.props.mutate({
+        variables: {
+          title: this.newTodoInput.value
+        }
+      })
+      .then(({ data }) => {
+        console.log("got data", data);
+      })
+      .catch(error => {
+        console.log("there was an error sending the query", error);
+      });
+    }
   }
 
   render(){
@@ -10,7 +29,7 @@ export default class TodoMVC extends Component {
         <section className="todoapp">
           <header className="header">
             <h1>todos</h1>
-            <input className="new-todo" placeholder="What needs to be done?" autoFocus />
+            <input className="new-todo" placeholder="What needs to be done?" autoFocus onKeyPress={this.handleKeyPress} ref={input => { this.newTodoInput = input;}}/>
           </header>
           { /* This section should be hidden by default and shown when there are todos */ }
           <section className="main">
@@ -49,3 +68,14 @@ export default class TodoMVC extends Component {
       );
   }
 }
+
+const submitTodo = gql`
+  mutation SubmitTodo($title: String!) {
+    submitTodo(title: $title) {
+      title
+      completed
+    }
+  }
+`;
+
+export default graphql(submitTodo)(TodoMVC);
