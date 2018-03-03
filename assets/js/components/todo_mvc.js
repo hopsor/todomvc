@@ -11,6 +11,7 @@ class TodoMVC extends Component {
 
   componentDidMount() {
     this.props.subscribeToNewTodos();
+    this.props.subscribeToDestroyedTodos();
   }
 
   handleKeyPress(e) {
@@ -99,12 +100,20 @@ const todosQuery = gql`
   }
 `;
 
-const todosSubscription = gql`
+const todoAddedSubscription = gql`
   subscription onTodoAdded {
     todoAdded {
       id
       title
       completed
+    }
+  }
+`;
+
+const todoDestroyedSubscription = gql`
+  subscription onTodoDestroyed {
+    todoDestroyed {
+      id
     }
   }
 `;
@@ -119,7 +128,7 @@ const withData = graphql(todosQuery, {
       ...props,
       subscribeToNewTodos: params => {
         return props.data.subscribeToMore({
-          document: todosSubscription,
+          document: todoAddedSubscription,
           variables: {},
           updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData.data) {
@@ -130,6 +139,24 @@ const withData = graphql(todosQuery, {
 
             return Object.assign({}, prev, {
               todos: [newItem, ...prev.todos]
+            });
+          }
+        });
+      },
+      subscribeToDestroyedTodos: params => {
+        return props.data.subscribeToMore({
+          document: todoDestroyedSubscription,
+          variables: {},
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) {
+              return prev;
+            }
+
+            const { id } = subscriptionData.data.todoDestroyed;
+            const updatedTodos = prev.todos.filter(todo => todo.id != id);
+
+            return Object.assign({}, prev, {
+              todos: updatedTodos
             });
           }
         });
