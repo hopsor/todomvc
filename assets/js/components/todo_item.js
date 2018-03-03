@@ -31,6 +31,23 @@ class TodoItem extends Component {
 
   handleKeyDown(e) {
     if (e.key === "Enter") {
+      const { id, completed } = this.props.todo;
+
+      this.props
+        .updateTodoMutation({
+          variables: {
+            id: id,
+            title: this.state.editText,
+            completed: completed
+          }
+        })
+        .then(({ data }) => {
+          console.log("got data", data);
+          this.setState({ editing: false });
+        })
+        .catch(error => {
+          console.log("there was an error sending the query", error);
+        });
     } else if (e.key === "Escape") {
       this.setState({ editing: false });
     }
@@ -38,7 +55,7 @@ class TodoItem extends Component {
 
   destroyTodo(e) {
     this.props
-      .mutate({
+      .destroyTodoMutation({
         variables: {
           id: this.props.todo.id
         }
@@ -74,6 +91,16 @@ class TodoItem extends Component {
   }
 }
 
+const updateTodo = gql`
+  mutation UpdateTodo($id: String!, $title: String!, $completed: Boolean!) {
+    updateTodo(id: $id, title: $title, completed: $completed) {
+      id
+      title
+      completed
+    }
+  }
+`;
+
 const destroyTodo = gql`
   mutation DestroyTodo($id: String!) {
     destroyTodo(id: $id) {
@@ -82,4 +109,7 @@ const destroyTodo = gql`
   }
 `;
 
-export default graphql(destroyTodo)(TodoItem);
+export default compose(
+  graphql(updateTodo, { name: "updateTodoMutation" }),
+  graphql(destroyTodo, { name: "destroyTodoMutation" })
+)(TodoItem);
