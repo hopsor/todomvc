@@ -16,8 +16,10 @@ class TodoItem extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.submitChanges = this.submitChanges.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
     this.destroyTodo = this.destroyTodo.bind(this);
+    this.handleCheckBoxClick = this.handleCheckBoxClick.bind(this);
   }
 
   handleEdit(e) {
@@ -33,22 +35,16 @@ class TodoItem extends Component {
 
   handleKeyDown(e) {
     if (e.key === "Enter") {
-      this.handleSubmit(e);
+      this.submitChanges({ title: this.state.editText });
     } else if (e.key === "Escape") {
       this.setState({ editing: false });
     }
   }
 
-  handleSubmit(e) {
-    const { id, completed } = this.props.todo;
-
+  submitChanges(changes) {
     this.props
       .updateTodoMutation({
-        variables: {
-          id: id,
-          title: this.state.editText,
-          completed: completed
-        }
+        variables: { ...this.props.todo, ...changes }
       })
       .then(({ data }) => {
         console.log("got data", data);
@@ -57,6 +53,10 @@ class TodoItem extends Component {
       .catch(error => {
         console.log("there was an error sending the query", error);
       });
+  }
+
+  handleBlur(e) {
+    this.submitChanges({ title: this.state.editText });
   }
 
   destroyTodo(e) {
@@ -72,6 +72,10 @@ class TodoItem extends Component {
       .catch(error => {
         console.log("there was an error sending the query", error);
       });
+  }
+
+  handleCheckBoxClick(e) {
+    this.submitChanges({ completed: e.target.checked });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -90,7 +94,12 @@ class TodoItem extends Component {
     return (
       <li className={todoClass}>
         <div className="view">
-          <input className="toggle" type="checkbox" />
+          <input
+            className="toggle"
+            type="checkbox"
+            onClick={this.handleCheckBoxClick}
+            checked={completed}
+          />
           <label onDoubleClick={this.handleEdit}>{title}</label>
           <button className="destroy" onClick={this.destroyTodo} />
         </div>
@@ -100,7 +109,7 @@ class TodoItem extends Component {
           value={this.state.editText}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
-          onBlur={this.handleSubmit}
+          onBlur={this.handleBlur}
         />
       </li>
     );

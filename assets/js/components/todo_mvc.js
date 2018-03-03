@@ -166,9 +166,9 @@ const withData = graphql(todosQuery, {
             const { id } = subscriptionData.data.todoUpdated;
             const indexAffected = prev.todos.findIndex(todo => todo.id == id);
             // Calling slice as the array is frozen
-            const updatedTodos = prev.todos
-              .slice(0)
-              .splice(indexAffected, 1, subscriptionData.data.todoUpdated);
+            const updatedTodos = prev.todos.slice(0);
+
+            updatedTodos.splice(indexAffected, 1, subscriptionData.data.todoUpdated);
 
             return Object.assign({}, prev, {
               todos: updatedTodos
