@@ -7,43 +7,43 @@ export default class TodoMVC extends Component {
 
   render(){
       return (
-        <section class="todoapp">
-          <header class="header">
+        <section className="todoapp">
+          <header className="header">
             <h1>todos</h1>
-            <input class="new-todo" placeholder="What needs to be done?" autofocus />
+            <input className="new-todo" placeholder="What needs to be done?" autoFocus />
           </header>
           { /* This section should be hidden by default and shown when there are todos */ }
-          <section class="main">
-            <input id="toggle-all" class="toggle-all" type="checkbox" />
-            <label for="toggle-all">Mark all as complete</label>
-            <ul class="todo-list">
+          <section className="main">
+            <input id="toggle-all" className="toggle-all" type="checkbox" />
+            <label htmlFor="toggle-all">Mark all as complete</label>
+            <ul className="todo-list">
               { /*
                 These are here just to show the structure of the list items
                 List items should get the class `editing` when editing and `completed` when marked as completed
               */}
-              <li class="completed">
-                <div class="view">
-                  <input class="toggle" type="checkbox" checked />
+              <li className="completed">
+                <div className="view">
+                  <input className="toggle" type="checkbox" defaultChecked />
                   <label>Taste JavaScript</label>
-                  <button class="destroy"></button>
+                  <button className="destroy"></button>
                 </div>
-                <input class="edit" value="Create a TodoMVC template" />
+                <input className="edit" defaultValue="Create a TodoMVC template" />
               </li>
               <li>
-                <div class="view">
-                  <input class="toggle" type="checkbox" />
+                <div className="view">
+                  <input className="toggle" type="checkbox" />
                   <label>Buy a unicorn</label>
-                  <button class="destroy"></button>
+                  <button className="destroy"></button>
                 </div>
-                <input class="edit" value="Rule the web" />
+                <input className="edit" defaultValue="Rule the web" />
               </li>
             </ul>
           </section>
           { /* This footer should hidden by default and shown when there are todos */ }
-          <footer class="footer">
+          <footer className="footer">
             { /* This should be `0 items left` by default */ }
-            <span class="todo-count"><strong>0</strong> item left</span>
-            <button class="clear-completed">Clear completed</button>
+            <span className="todo-count"><strong>0</strong> item left</span>
+            <button className="clear-completed">Clear completed</button>
           </footer>
         </section>
       );

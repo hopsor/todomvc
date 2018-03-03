@@ -44,6 +44,6 @@ document.addEventListener("DOMContentLoaded", function() {
     <ApolloProvider client={client}>
       <TodoMVC />
     </ApolloProvider>,
-    document.body
+    document.getElementById("todomvc_container")
   );
 });
