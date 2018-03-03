@@ -23,10 +23,27 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import TodoMVC from "./components/todo_mvc";
+import ApolloClient from "apollo-client";
+import { ApolloProvider } from "react-apollo";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import * as AbsintheSocket from "@absinthe/socket";
+import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
+import { Socket as PhoenixSocket } from "phoenix";
 
 document.addEventListener("DOMContentLoaded", function() {
+  const link = createAbsintheSocketLink(AbsintheSocket.create(
+    new PhoenixSocket("ws://localhost:4000/socket/websocket?vsn=1.0.0"),
+  ));
+
+  const client = new ApolloClient({
+    link,
+    cache: new InMemoryCache()
+  });
+
   ReactDOM.render(
-    <TodoMVC />,
+    <ApolloProvider client={client}>
+      <TodoMVC />
+    </ApolloProvider>,
     document.body
   );
 });

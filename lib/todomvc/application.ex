@@ -14,6 +14,7 @@ defmodule Todomvc.Application do
       supervisor(TodomvcWeb.Endpoint, []),
       # Start your own worker by calling: Todomvc.Worker.start_link(arg1, arg2, arg3)
       # worker(Todomvc.Worker, [arg1, arg2, arg3]),
+      supervisor(Absinthe.Subscription, [TodomvcWeb.Endpoint])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

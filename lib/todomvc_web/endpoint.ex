@@ -1,6 +1,7 @@
 defmodule TodomvcWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :todomvc
-
+  use Absinthe.Phoenix.Endpoint
+  
   socket "/socket", TodomvcWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.

@@ -1,5 +1,6 @@
 defmodule TodomvcWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket, schema: TodomvcWeb.Schema
 
   ## Channels
   # channel "room:*", TodomvcWeb.RoomChannel
