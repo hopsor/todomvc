@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
-import classNames from "classnames";
+import TodoItem from "./todo_item";
 
 class TodoMVC extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class TodoMVC extends Component {
   }
 
   handleKeyPress(e) {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && this.newTodoInput.value !== "") {
       this.props
         .mutate({
           variables: {
@@ -23,27 +23,12 @@ class TodoMVC extends Component {
         })
         .then(({ data }) => {
           console.log("got data", data);
+          this.newTodoInput.value = "";
         })
         .catch(error => {
           console.log("there was an error sending the query", error);
         });
     }
-  }
-
-  renderTodoItem(todo, idx) {
-    const todoClass = classNames({ completed: todo.completed });
-
-    // List items should get the class `editing` when editing and `completed` when marked as completed
-    return (
-      <li className={todoClass} key={idx}>
-        <div className="view">
-          <input className="toggle" type="checkbox" />
-          <label>{todo.title}</label>
-          <button className="destroy" />
-        </div>
-        <input className="edit" defaultValue="Rule the web" />
-      </li>
-    );
   }
 
   renderTodos() {
@@ -56,7 +41,7 @@ class TodoMVC extends Component {
             <input id="toggle-all" className="toggle-all" type="checkbox" />
             <label htmlFor="toggle-all">Mark all as complete</label>
             <ul className="todo-list">
-              {todos.map((todo, idx) => this.renderTodoItem(todo, idx))}
+              {todos.map(todo => <TodoItem todo={todo} key={todo.id} />)}
             </ul>
           </section>
           {/* This footer should hidden by default and shown when there are todos */}
@@ -97,6 +82,7 @@ class TodoMVC extends Component {
 const submitTodo = gql`
   mutation SubmitTodo($title: String!) {
     submitTodo(title: $title) {
+      id
       title
       completed
     }
@@ -106,6 +92,7 @@ const submitTodo = gql`
 const todosQuery = gql`
   query Todos {
     todos {
+      id
       title
       completed
     }
@@ -115,6 +102,7 @@ const todosQuery = gql`
 const todosSubscription = gql`
   subscription onTodoAdded {
     todoAdded {
+      id
       title
       completed
     }
