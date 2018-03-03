@@ -7,9 +7,33 @@ class TodoItem extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { editing: false };
+    this.state = {
+      editing: false,
+      editText: ""
+    };
 
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.destroyTodo = this.destroyTodo.bind(this);
+  }
+
+  handleEdit(e) {
+    this.setState({
+      editing: true,
+      editText: this.props.todo.title
+    });
+  }
+
+  handleChange(e) {
+    this.setState({ editText: e.target.value });
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Enter") {
+    } else if (e.key === "Escape") {
+      this.setState({ editing: false });
+    }
   }
 
   destroyTodo(e) {
@@ -29,17 +53,22 @@ class TodoItem extends Component {
 
   render() {
     const { id, title, completed } = this.props.todo;
-    const todoClass = classNames({ completed: completed });
+    const todoClass = classNames({ completed: completed, editing: this.state.editing });
 
     // List items should get the class `editing` when editing and `completed` when marked as completed
     return (
       <li className={todoClass}>
         <div className="view">
           <input className="toggle" type="checkbox" />
-          <label>{title}</label>
+          <label onDoubleClick={this.handleEdit}>{title}</label>
           <button className="destroy" onClick={this.destroyTodo} />
         </div>
-        <input className="edit" defaultValue="Rule the web" />
+        <input
+          className="edit"
+          value={this.state.editText}
+          onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
+        />
       </li>
     );
   }
