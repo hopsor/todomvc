@@ -25,6 +25,16 @@ defmodule TodomvcWeb.Schema do
       end)
     end
 
+    field :update_todo, :todo do
+      arg(:id, non_null(:string))
+      arg(:title, :string)
+      arg(:completed, :boolean)
+
+      resolve(fn %{id: id, title: title, completed: completed}, _ ->
+        {:ok, %{id: id, title: title, completed: completed}}
+      end)
+    end
+
     field :destroy_todo, :todo do
       arg(:id, non_null(:string))
 
@@ -42,6 +52,27 @@ defmodule TodomvcWeb.Schema do
 
       trigger(
         :submit_todo,
+        topic: fn _todo ->
+          "todos"
+        end
+      )
+
+      resolve(fn todo, _, _ ->
+        # this function is often not actually necessary, as the default resolver
+        # for subscription functions will just do what we're doing here.
+        # The point is, subscription resolvers receive whatever value triggers
+        # the subscription, in our case a comment.
+        {:ok, todo}
+      end)
+    end
+
+    field :todo_updated, :todo do
+      config(fn _args, _ ->
+        {:ok, topic: "todos"}
+      end)
+
+      trigger(
+        :update_todo,
         topic: fn _todo ->
           "todos"
         end
