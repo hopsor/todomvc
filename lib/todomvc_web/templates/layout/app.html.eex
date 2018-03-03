@@ -14,7 +14,7 @@
   <body>
     <%= render @view_module, @view_template, assigns %>
     <script type="text/javascript">
-      window.websocketUrl = "<%= websocket_url %>";
+      window.websocketUrl = "<%= websocket_url() %>";
     </script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>

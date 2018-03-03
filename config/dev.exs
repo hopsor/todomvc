@@ -54,13 +54,5 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
-config :todomvc, Todomvc.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "todomvc_dev",
-  hostname: "localhost",
-  pool_size: 10
-
+# Websockets
 config :todomvc, :websocket_url, "ws://localhost:4000/socket/websocket?vsn=1.0.0"

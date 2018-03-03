@@ -5,9 +5,6 @@
 # is restricted to this project.
 use Mix.Config
 
-# General application configuration
-config :todomvc, ecto_repos: [Todomvc.Repo]
-
 # Configures the endpoint
 config :todomvc, TodomvcWeb.Endpoint,
   url: [host: "localhost"],
