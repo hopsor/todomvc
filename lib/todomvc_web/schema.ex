@@ -2,8 +2,13 @@ defmodule TodomvcWeb.Schema do
   use Absinthe.Schema
 
   import_types(TodomvcWeb.Schema.TodoTypes)
+  alias TodomvcWeb.Resolvers
 
   query do
+    @desc "Get all todos"
+    field :todos, list_of(:todo) do
+      resolve(&Resolvers.list_todos/3)
+    end
   end
 
   mutation do
