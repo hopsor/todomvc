@@ -1,6 +1,6 @@
 # TodoMVC
 
-Multi user TodoMVC implementation using React, Apollo, Graphql and Phoenix Framework websockets.
+Multi user TodoMVC implementation using React, Apollo, Graphql, Absinthe and Phoenix Framework websockets.
 
 To start your Phoenix server:
 
