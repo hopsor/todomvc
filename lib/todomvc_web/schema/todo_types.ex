@@ -3,7 +3,7 @@ defmodule TodomvcWeb.Schema.TodoTypes do
 
   @desc "Todo"
   object :todo do
-    field :title, :string
-    field :completed, :boolean
+    field(:title, :string)
+    field(:completed, :boolean)
   end
 end
