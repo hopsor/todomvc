@@ -1,0 +1,30 @@
+{
+  "repository": {},
+  "license": "MIT",
+  "scripts": {
+    "deploy": "brunch build --production",
+    "watch": "brunch watch --stdin"
+  },
+  "dependencies": {
+    "apollo-client-preset": "^1.0.8",
+    "apollo-link-context": "^1.0.7",
+    "graphql": "^0.13.1",
+    "graphql-tag": "^2.8.0",
+    "phoenix": "file:../deps/phoenix",
+    "phoenix_html": "file:../deps/phoenix_html",
+    "react": "^16.2.0",
+    "react-apollo": "^2.0.4",
+    "react-dom": "^16.2.0",
+    "todomvc-app-css": "^2.1.0"
+  },
+  "devDependencies": {
+    "babel-brunch": "6.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "brunch": "2.10.9",
+    "clean-css-brunch": "2.10.0",
+    "sass-brunch": "^2.10.4",
+    "uglify-js-brunch": "2.10.0"
+  }
+}
