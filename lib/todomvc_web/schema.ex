@@ -35,11 +35,11 @@ defmodule TodomvcWeb.Schema do
       end)
     end
 
-    field :destroy_todo, :todo do
-      arg(:id, non_null(:string))
+    field :destroy_todos, list_of(:todo) do
+      arg(:ids, list_of(:string))
 
-      resolve(fn %{id: todo_id}, _ ->
-        {:ok, %{id: todo_id}}
+      resolve(fn %{ids: ids}, _ ->
+        {:ok, Enum.map(ids, &%{id: &1})}
       end)
     end
   end
@@ -87,24 +87,24 @@ defmodule TodomvcWeb.Schema do
       end)
     end
 
-    field :todo_destroyed, :todo do
+    field :todos_destroyed, list_of(:todo) do
       config(fn _args, _ ->
         {:ok, topic: "todos"}
       end)
 
       trigger(
-        :destroy_todo,
+        :destroy_todos,
         topic: fn _todo ->
           "todos"
         end
       )
 
-      resolve(fn todo, _, _ ->
+      resolve(fn todos, _, _ ->
         # this function is often not actually necessary, as the default resolver
         # for subscription functions will just do what we're doing here.
         # The point is, subscription resolvers receive whatever value triggers
         # the subscription, in our case a comment.
-        {:ok, todo}
+        {:ok, todos}
       end)
     end
   end

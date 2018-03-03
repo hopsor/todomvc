@@ -67,9 +67,9 @@ class TodoItem extends Component {
 
   destroyTodo(e) {
     this.props
-      .destroyTodoMutation({
+      .destroyTodosMutation({
         variables: {
-          id: this.props.todo.id
+          ids: [this.props.todo.id]
         }
       })
       .then(({ data }) => {
@@ -132,9 +132,9 @@ const updateTodo = gql`
   }
 `;
 
-const destroyTodo = gql`
-  mutation DestroyTodo($id: String!) {
-    destroyTodo(id: $id) {
+const destroyTodos = gql`
+  mutation DestroyTodos($ids: [String]) {
+    destroyTodos(ids: $ids) {
       id
     }
   }
@@ -142,5 +142,5 @@ const destroyTodo = gql`
 
 export default compose(
   graphql(updateTodo, { name: "updateTodoMutation" }),
-  graphql(destroyTodo, { name: "destroyTodoMutation" })
+  graphql(destroyTodos, { name: "destroyTodosMutation" })
 )(TodoItem);

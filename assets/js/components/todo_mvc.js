@@ -7,6 +7,7 @@ class TodoMVC extends Component {
   constructor(props) {
     super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleClearClick = this.handleClearClick.bind(this);
   }
 
   componentDidMount() {
@@ -18,7 +19,7 @@ class TodoMVC extends Component {
   handleKeyPress(e) {
     if (e.key === "Enter" && this.newTodoInput.value !== "") {
       this.props
-        .mutate({
+        .submitTodoMutation({
           variables: {
             title: this.newTodoInput.value
           }
@@ -26,6 +27,25 @@ class TodoMVC extends Component {
         .then(({ data }) => {
           console.log("got data", data);
           this.newTodoInput.value = "";
+        })
+        .catch(error => {
+          console.log("there was an error sending the query", error);
+        });
+    }
+  }
+
+  handleClearClick() {
+    const affectedIds = this.props.data.todos.filter(todo => todo.completed).map(todo => todo.id);
+
+    if (affectedIds.length > 0) {
+      this.props
+        .destroyTodosMutation({
+          variables: {
+            ids: affectedIds
+          }
+        })
+        .then(({ data }) => {
+          console.log("got data", data);
         })
         .catch(error => {
           console.log("there was an error sending the query", error);
@@ -61,7 +81,9 @@ class TodoMVC extends Component {
           {/* This footer should hidden by default and shown when there are todos */}
           <footer className="footer">
             {this.renderItemsLeft()}
-            <button className="clear-completed">Clear completed</button>
+            <button className="clear-completed" onClick={this.handleClearClick}>
+              Clear completed
+            </button>
           </footer>
         </React.Fragment>
       );
@@ -100,6 +122,14 @@ const submitTodo = gql`
   }
 `;
 
+const destroyTodos = gql`
+  mutation DestroyTodos($ids: [String]) {
+    destroyTodos(ids: $ids) {
+      id
+    }
+  }
+`;
+
 const todosQuery = gql`
   query Todos {
     todos {
@@ -131,8 +161,8 @@ const todoUpdatedSubscription = gql`
 `;
 
 const todoDestroyedSubscription = gql`
-  subscription onTodoDestroyed {
-    todoDestroyed {
+  subscription onTodosDestroyed {
+    todosDestroyed {
       id
     }
   }
@@ -194,8 +224,8 @@ const withData = graphql(todosQuery, {
               return prev;
             }
 
-            const { id } = subscriptionData.data.todoDestroyed;
-            const updatedTodos = prev.todos.filter(todo => todo.id != id);
+            const affectedIds = subscriptionData.data.todosDestroyed.map(todo => todo.id);
+            const updatedTodos = prev.todos.filter(todo => !affectedIds.includes(todo.id));
 
             return Object.assign({}, prev, {
               todos: updatedTodos
@@ -207,4 +237,8 @@ const withData = graphql(todosQuery, {
   }
 });
 
-export default compose(graphql(submitTodo), withData)(TodoMVC);
+export default compose(
+  graphql(submitTodo, { name: "submitTodoMutation" }),
+  graphql(destroyTodos, { name: "destroyTodosMutation" }),
+  withData
+)(TodoMVC);
