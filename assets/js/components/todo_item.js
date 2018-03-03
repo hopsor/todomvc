@@ -10,7 +10,8 @@ class TodoItem extends Component {
 
     this.state = {
       editing: false,
-      editText: ""
+      editText: "",
+      lastKeyPressed: null
     };
 
     this.handleEdit = this.handleEdit.bind(this);
@@ -34,10 +35,15 @@ class TodoItem extends Component {
   }
 
   handleKeyDown(e) {
+    this.setState({ lastKeyPressed: e.key });
+
     if (e.key === "Enter") {
       this.submitChanges({ title: this.state.editText });
     } else if (e.key === "Escape") {
-      this.setState({ editing: false });
+      this.setState({
+        editing: false,
+        editText: this.props.todo.title
+      });
     }
   }
 
@@ -56,7 +62,7 @@ class TodoItem extends Component {
   }
 
   handleBlur(e) {
-    this.submitChanges({ title: this.state.editText });
+    if (this.state.lastKeyPressed !== "Escape") this.submitChanges({ title: this.state.editText });
   }
 
   destroyTodo(e) {
