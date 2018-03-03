@@ -22,7 +22,7 @@ config :todomvc, TodomvcWeb.Endpoint,
 config :logger, level: :info
 
 # Websockets url
-config :todomvc, :websocket_url, "ws://todomvc-realtime.herokuapp.com/socket/websocket?vsn=1.0.0"
+config :todomvc, :websocket_url, "wss://todomvc-realtime.herokuapp.com/socket/websocket?vsn=1.0.0"
 
 # ## SSL Support
 #
