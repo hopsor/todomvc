@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
 import classNames from "classnames";
@@ -15,6 +16,7 @@ class TodoItem extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.destroyTodo = this.destroyTodo.bind(this);
   }
 
@@ -31,26 +33,30 @@ class TodoItem extends Component {
 
   handleKeyDown(e) {
     if (e.key === "Enter") {
-      const { id, completed } = this.props.todo;
-
-      this.props
-        .updateTodoMutation({
-          variables: {
-            id: id,
-            title: this.state.editText,
-            completed: completed
-          }
-        })
-        .then(({ data }) => {
-          console.log("got data", data);
-          this.setState({ editing: false });
-        })
-        .catch(error => {
-          console.log("there was an error sending the query", error);
-        });
+      this.handleSubmit(e);
     } else if (e.key === "Escape") {
       this.setState({ editing: false });
     }
+  }
+
+  handleSubmit(e) {
+    const { id, completed } = this.props.todo;
+
+    this.props
+      .updateTodoMutation({
+        variables: {
+          id: id,
+          title: this.state.editText,
+          completed: completed
+        }
+      })
+      .then(({ data }) => {
+        console.log("got data", data);
+        this.setState({ editing: false });
+      })
+      .catch(error => {
+        console.log("there was an error sending the query", error);
+      });
   }
 
   destroyTodo(e) {
@@ -68,6 +74,14 @@ class TodoItem extends Component {
       });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.editing && this.state.editing) {
+      var node = ReactDOM.findDOMNode(this.refs.editField);
+      node.focus();
+      node.setSelectionRange(node.value.length, node.value.length);
+    }
+  }
+
   render() {
     const { id, title, completed } = this.props.todo;
     const todoClass = classNames({ completed: completed, editing: this.state.editing });
@@ -81,10 +95,12 @@ class TodoItem extends Component {
           <button className="destroy" onClick={this.destroyTodo} />
         </div>
         <input
+          ref="editField"
           className="edit"
           value={this.state.editText}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
+          onBlur={this.handleSubmit}
         />
       </li>
     );

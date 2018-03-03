@@ -11,6 +11,7 @@ class TodoMVC extends Component {
 
   componentDidMount() {
     this.props.subscribeToNewTodos();
+    this.props.subscribeToUpdatedTodos();
     this.props.subscribeToDestroyedTodos();
   }
 
@@ -110,6 +111,16 @@ const todoAddedSubscription = gql`
   }
 `;
 
+const todoUpdatedSubscription = gql`
+  subscription onTodoUpdated {
+    todoUpdated {
+      id
+      title
+      completed
+    }
+  }
+`;
+
 const todoDestroyedSubscription = gql`
   subscription onTodoDestroyed {
     todoDestroyed {
@@ -139,6 +150,28 @@ const withData = graphql(todosQuery, {
 
             return Object.assign({}, prev, {
               todos: [newItem, ...prev.todos]
+            });
+          }
+        });
+      },
+      subscribeToUpdatedTodos: params => {
+        return props.data.subscribeToMore({
+          document: todoUpdatedSubscription,
+          variables: {},
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) {
+              return prev;
+            }
+
+            const { id } = subscriptionData.data.todoUpdated;
+            const indexAffected = prev.todos.findIndex(todo => todo.id == id);
+            // Calling slice as the array is frozen
+            const updatedTodos = prev.todos
+              .slice(0)
+              .splice(indexAffected, 1, subscriptionData.data.todoUpdated);
+
+            return Object.assign({}, prev, {
+              todos: updatedTodos
             });
           }
         });
