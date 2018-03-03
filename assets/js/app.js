@@ -31,9 +31,9 @@ import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link";
 import { Socket as PhoenixSocket } from "phoenix";
 
 document.addEventListener("DOMContentLoaded", function() {
-  const link = createAbsintheSocketLink(AbsintheSocket.create(
-    new PhoenixSocket("ws://localhost:4000/socket/websocket?vsn=1.0.0"),
-  ));
+  const link = createAbsintheSocketLink(
+    AbsintheSocket.create(new PhoenixSocket("ws://localhost:4000/socket/websocket?vsn=1.0.0"))
+  );
 
   const client = new ApolloClient({
     link,
